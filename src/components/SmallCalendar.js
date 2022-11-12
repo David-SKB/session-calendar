@@ -1,9 +1,13 @@
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
 import GlobalContext from "../context/GlobalContext";
-import { getMonth } from "../util";
+import { getMonth, getTheme, getThemeClass } from "../util";
+import '../themes.css';
 
 export default function SmallCalendar() {
+  const themeColor = getTheme();
+  const themeClass = getThemeClass();
+  const accentColor = getTheme("accentColor");
   const [currentMonthIdx, setCurrentMonthIdx] = useState(
     dayjs().month()
   );
@@ -35,17 +39,17 @@ export default function SmallCalendar() {
     const currDay = day.format(format);
     const slcDay = daySelected && daySelected.format(format);
     if (nowDay === currDay) {
-      return "bg-blue-500 rounded-full text-white";
+      return "bg-".concat(themeColor, "-500 rounded-full text-white");
     } else if (currDay === slcDay) {
-      return "bg-blue-100 rounded-full text-blue-600 font-bold";
+      return "bg-".concat(themeColor, "-100 rounded-full text-").concat(themeColor, "-600 font-bold");
     } else {
       return "";
     }
   }
   return (
-    <div className="mt-9">
+    <div className={"mt-9 " + themeClass}>
       <header className="flex justify-between">
-        <p className="text-gray-500 font-bold">
+        <p className={"text-" + accentColor + "-200 font-bold"}>
           {dayjs(new Date(dayjs().year(), currentMonthIdx)).format(
             "MMMM YYYY"
           )}

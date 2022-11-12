@@ -1,16 +1,19 @@
 import dayjs from "dayjs";
 import React, { useContext, useState, useEffect } from "react";
 import GlobalContext from "../context/GlobalContext";
+import { getMonth, getTheme, getThemeClass } from "../util";
+import '../themes.css';
 
 export default function Day({ day, rowIdx }) {
-  const themeColor = "blue";
+  const themeColor = getTheme();
+  const themeClass = getThemeClass();
+  const borderClass = getThemeClass("border");
   const [dayEvents, setDayEvents] = useState([]);
   const {
     setDaySelected,
     setShowEventModal,
     filteredEvents,
     setSelectedEvent,
-    setThemeColor,
   } = useContext(GlobalContext);
 
   useEffect(() => {
@@ -23,11 +26,12 @@ export default function Day({ day, rowIdx }) {
 
   function getCurrentDayClass() {
     return day.format("DD-MM-YY") === dayjs().format("DD-MM-YY")
-      ? "bg-".concat(setThemeColor, "-600 text-white rounded-full w-7")
+      ? "bg-".concat(themeColor, "-600 text-white rounded-full w-7")
       : "";
   }
   return (
-    <div className="border border-gray-200 flex flex-col">
+    <div className={"border flex flex-col " + themeClass}>
+      
       <header className="flex flex-col items-center">
         {rowIdx === 0 && (
           <p className="text-sm mt-1">

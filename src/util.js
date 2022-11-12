@@ -13,3 +13,30 @@ export function getMonth(month = dayjs().month()) {
   });
   return daysMatrix;
 }
+
+export function getTheme(property) {
+  let theme = "";
+  switch (property) {
+    case "accentColor":
+      theme = "white";
+      break;
+    case "backgroundColor":
+      theme = "grey";
+    default:
+      theme = "red";
+  }
+    
+  return theme;
+}
+
+export function getThemeClass(property) {
+  let themeClass = "";
+  switch (property) {
+    case "border":
+      themeClass = "theme-dark";
+      break;
+    default:
+      themeClass = "theme-dark";
+  }
+  return themeClass;
+}
