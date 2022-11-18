@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import "./App.css";
-import { getMonth, getTheme, getThemeClass } from "./util";
+import { getMonth } from "./util";
+//import { getTheme, getThemeClass } from "./util";
 import CalendarHeader from "./components/CalendarHeader";
 import Sidebar from "./components/Sidebar";
 import Month from "./components/Month";
@@ -11,8 +12,8 @@ import './themes.css';
 function App() {
   const [currenMonth, setCurrentMonth] = useState(getMonth());
   const { monthIndex, showEventModal } = useContext(GlobalContext);
-  const themeColor = getTheme();
-  const themeClass = getThemeClass();
+  //const themeColor = getTheme();
+  //const themeClass = getThemeClass();
 
   useEffect(() => {
     setCurrentMonth(getMonth(monthIndex));

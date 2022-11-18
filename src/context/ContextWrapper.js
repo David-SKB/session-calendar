@@ -5,6 +5,7 @@ import React, {
   useMemo,
 } from "react";
 import GlobalContext from "./GlobalContext";
+import { getAllEvents } from "../services/EventService";
 import dayjs from "dayjs";
 
 function savedEventsReducer(state, { type, payload }) {
@@ -24,6 +25,8 @@ function savedEventsReducer(state, { type, payload }) {
 function initEvents() {
   const storageEvents = localStorage.getItem("savedEvents");
   const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
+  console.log("STORAGEEVENTS " + storageEvents);
+  console.log("PARSEDEVENTS " + parsedEvents);
   return parsedEvents;
 }
 
@@ -41,11 +44,13 @@ export default function ContextWrapper(props) {
   );
 
   const filteredEvents = useMemo(() => {
+    console.log("SAVED EVENTS " + JSON.stringify(savedEvents));
+    console.log(labels);
     return savedEvents.filter((evt) =>
       labels
         .filter((lbl) => lbl.checked)
         .map((lbl) => lbl.label)
-        .includes(evt.label)
+        .includes(evt.event_label)
     );
   }, [savedEvents, labels]);
 
@@ -55,7 +60,7 @@ export default function ContextWrapper(props) {
 
   useEffect(() => {
     setLabels((prevLabels) => {
-      return [...new Set(savedEvents.map((evt) => evt.label))].map(
+      return [...new Set(savedEvents.map((evt) => evt.event_label))].map(
         (label) => {
           const currentLabel = prevLabels.find(
             (lbl) => lbl.label === label

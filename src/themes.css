@@ -24,5 +24,7 @@
 .w3-hover-border-theme:hover {border-color:#616161 !important}
 
  /* MY THEMES */
- .theme-dark {color:#fff !important; background-color:#303030 !important; border-color: rgb(75 85 99);}
- .theme-red {color:#fff !important; background-color:#a00000 !important}
+ .theme-dark {color:#fff !important; background-color:#181818 !important; border-color: #303030;}
+ .theme-dark-accent {color:#fff !important; background-color:#303030 !important; border-color: #303030;}
+
+ .theme-red {color:#fff !important; background-color:#8F0E0E !important}

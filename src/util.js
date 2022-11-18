@@ -22,8 +22,10 @@ export function getTheme(property) {
       break;
     case "backgroundColor":
       theme = "grey";
+      break;
     default:
       theme = "red";
+      break;
   }
     
   return theme;
@@ -34,6 +36,12 @@ export function getThemeClass(property) {
   switch (property) {
     case "border":
       themeClass = "theme-dark";
+      break;
+      case "accent":
+        themeClass = "theme-dark-accent";
+        break;  
+      case "primary-color":
+      themeClass = "theme-red";
       break;
     default:
       themeClass = "theme-dark";

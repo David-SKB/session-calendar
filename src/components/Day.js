@@ -1,13 +1,15 @@
 import dayjs from "dayjs";
 import React, { useContext, useState, useEffect } from "react";
 import GlobalContext from "../context/GlobalContext";
-import { getMonth, getTheme, getThemeClass } from "../util";
+import { getTheme, getThemeClass } from "../util";
 import '../themes.css';
+//import { getAllEvents, createEvent } from "../services/EventService";
 
 export default function Day({ day, rowIdx }) {
   const themeColor = getTheme();
   const themeClass = getThemeClass();
-  const borderClass = getThemeClass("border");
+  //const borderClass = getThemeClass("border");
+
   const [dayEvents, setDayEvents] = useState([]);
   const {
     setDaySelected,
@@ -55,7 +57,7 @@ export default function Day({ day, rowIdx }) {
           <div
             key={idx}
             onClick={() => setSelectedEvent(evt)}
-            className={`bg-${evt.label}-200 p-1 mr-3 text-gray-600 text-sm rounded mb-1 truncate`}
+            className={`bg-${evt.event_label}-200 p-1 mr-0 text-gray-600 text-sm rounded mb-1 truncate`}
           >
             {evt.title}
           </div>
