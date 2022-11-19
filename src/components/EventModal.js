@@ -24,23 +24,23 @@ export default function EventModal() {
     daySelected,
   } = useContext(GlobalContext);
 
-  const [title, setTitle] = useState(
-    selectedEvent ? selectedEvent.title : ""
+  const [event_title, setTitle] = useState(
+    selectedEvent ? selectedEvent.event_title : ""
   );
-  const [description, setDescription] = useState(
-    selectedEvent ? selectedEvent.description : ""
+  const [event_description, setDescription] = useState(
+    selectedEvent ? selectedEvent.event_description : ""
   );
   const [eventStartTime, setEventStartTime] = useState(
-    selectedEvent ? selectedEvent.eventStartTime : ""
+    selectedEvent ? selectedEvent.start_time : ""
   );
   const [eventEndTime, setEventEndTime] = useState(
-    selectedEvent ? selectedEvent.eventEndTime : ""
+    selectedEvent ? selectedEvent.end_time : ""
   );
-  const [eventStart, setEventStart] = useState(
+  const [startDate, setStartDate] = useState(
     selectedEvent ? selectedEvent.eventStart : ""
   );
-  const [eventEnd, setEventEnd] = useState(
-    selectedEvent ? selectedEvent.eventEnd : ""
+  const [endDate, setEndDate] = useState(
+    selectedEvent ? selectedEvent.end_date : ""
   );
   const [eventStartDay, setEventStartDay] = useState(
     selectedEvent ? selectedEvent.eventStartDay : ""
@@ -48,29 +48,47 @@ export default function EventModal() {
   
   const [selectedLabel, setSelectedLabel] = useState(
     selectedEvent
-      ? labelsClasses.find((lbl) => lbl === selectedEvent.label)
+      ? labelsClasses.find((lbl) => lbl === selectedEvent.event_label)
       : labelsClasses[0]
   );
 
   function handleSubmit(e) {
     e.preventDefault();
-    const eventID = new Date(replaceRange((eventStart ? eventStart : daySelected.toDate().toISOString()), 11, 16, eventStartTime.valueOf())).valueOf();
+    const eventID = new Date(replaceRange((startDate ? startDate : daySelected.toDate().toISOString()), 11, 16, eventStartTime.valueOf())).valueOf();
     //console.log("HANDLESUBMIT: " + eventID);
     //console.log("SELECTEDEVENT: " + selectedEvent);
     //console.log(eventStart);
     //console.log(eventStartTime.valueOf());
     //console.log(eventID);
 
+    /*id = Column(Integer, primary_key=True)-
+    event_title = Column(String, nullable=False)x
+    event_description = Column(String, nullable=True)x
+    start_date = Column(Date, nullable=False)x
+    end_date = Column(Date, nullable=True)x
+    start_time = Column(Time, nullable=True)x
+    end_time = Column(Time, nullable=True)x
+    is_full_day_event = Column(Boolean, nullable=False)p
+    is_reccuring = Column(Boolean, nullable=False)p
+    created_by = Column(String, nullable=False)
+    created_date = Column(DateTime, nullable=False)x
+    parent_event_id = Column(Integer, ForeignKey("event.id"), nullable = True)s
+    event_label = Column(String, nullable = True)x*/
+
     const calendarEvent = {
-      title,
-      description,
-      event_label: selectedLabel,
-      day: eventStart ? eventStart : daySelected,
-      eventStart: eventStart ? eventStart : daySelected,
-      eventEnd,
-      eventStartTime,
-      eventEndTime,
       id: selectedEvent ? selectedEvent.id : eventID,
+      event_title,
+      event_description,
+      start_date: startDate ? startDate : daySelected,
+      end_date: endDate,
+      start_time: eventStartTime,
+      end_time: eventEndTime,
+      is_full_day_event: false,
+      is_reccuring: false,
+      created_by: "frontend-dev",
+      created_date: dayjs(),
+      parent_event_id: null,
+      event_label: selectedLabel,
     };
     if (selectedEvent) {
       dispatchCalEvent({ type: "update", payload: calendarEvent });
@@ -143,7 +161,7 @@ export default function EventModal() {
               type="text"
               name="title"
               placeholder="Add title"
-              value={title}
+              value={event_title}
               required
               className={"pt-3 border-0 text-gray-600 bg-" + themeColor + "-200 text-xl font-semibold pb-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"}
               onChange={(e) => setTitle(e.target.value)}
@@ -154,12 +172,12 @@ export default function EventModal() {
             
             <input
                 type="date"
-                name="eventStart"
-                id="eventStart"
-                value={eventStart ? new Date(eventStart).toISOString().slice(0, 10) : new Date(daySelected).toISOString().slice(0, 10)}
+                name="start_date"
+                id="start_date"
+                value={startDate ? new Date(startDate).toISOString().slice(0, 10) : new Date(daySelected).toISOString().slice(0, 10)}
                 required
                 className={"justify-center border-none bg-" + themeColor + "-200"}
-                onChange={(e) => {setEventStart(e.target.value); }}
+                onChange={(e) => {setStartDate(e.target.value); }}
                 min={dayjs().toISOString().slice(0, 10)}
               />
 
@@ -199,7 +217,7 @@ export default function EventModal() {
               type="text"
               name="description"
               placeholder="Add a description"
-              value={description}
+              value={event_description}
               required
               className={"pt-3 bg-" + themeColor + "-200 border-0 text-gray-600 pb-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"}
               onChange={(e) => setDescription(e.target.value)}
