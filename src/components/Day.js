@@ -5,11 +5,11 @@ import { getTheme, getThemeClass } from "../util";
 import '../themes.css';
 //import { getAllEvents, createEvent } from "../services/EventService";
 
-export default function Day({ day, rowIdx }) {
+export default function Day({ day, rowIdx, isDataLoaded, eventList }) {
   const themeColor = getTheme();
   const themeClass = getThemeClass();
   //const borderClass = getThemeClass("border");
-
+  console.log("[DAY] LOADING DATA: " + isDataLoaded + " " + eventList);
   const [dayEvents, setDayEvents] = useState([]);
   const {
     setDaySelected,
@@ -17,7 +17,7 @@ export default function Day({ day, rowIdx }) {
     filteredEvents,
     setSelectedEvent,
   } = useContext(GlobalContext);
-
+  //console.log("[DAY] FILTEREDEVENTS: " + filteredEvents);
   useEffect(() => {
     const events = filteredEvents.filter(
       (evt) =>

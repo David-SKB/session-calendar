@@ -1,5 +1,4 @@
 import React from "react";
-//import { getAllEvents, createEvent } from "../services/EventService";
 
 const GlobalContext = React.createContext({
   monthIndex: 0,
@@ -20,8 +19,12 @@ const GlobalContext = React.createContext({
   setEventEndTime: (eventEndTime) => {},
   showEventModal: false,
   setShowEventModal: () => {},
+  dataLoaded: false,
+  setDataLoaded: () => {},
   dispatchCalEvent: ({ type, payload }) => {},
+  dispatchCalEvent2: ({ type, payload }) => {},
   savedEvents: [],
+  setsavedEvents: (savedEvents) => {},
   selectedEvent: null,
   setSelectedEvent: () => {},
   setLabels: () => {},
@@ -29,7 +32,9 @@ const GlobalContext = React.createContext({
   updateLabel: () => {},
   filteredEvents: [],
   allEvents: [],
-  
+  eventList: [],
+  getEvents: () => {},
+
 });
 
 export default GlobalContext;

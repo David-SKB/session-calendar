@@ -5,10 +5,12 @@ import React, {
   useMemo,
 } from "react";
 import GlobalContext from "./GlobalContext";
-import { getAllEvents } from "../services/EventService";
 import dayjs from "dayjs";
 
 function savedEventsReducer(state, { type, payload }) {
+  //console.log("[CW] STATE: " + state);
+  //console.log("[CW] TYPE: " + type);
+  //console.log("[CW] PAYLOAD: " + payload);
   switch (type) {
     case "push":
       return [...state, payload];
@@ -16,17 +18,31 @@ function savedEventsReducer(state, { type, payload }) {
       return state.map((evt) =>
         evt.id === payload.id ? payload : evt
       );
+    case "load":
+      return payload;
     case "delete":
       return state.filter((evt) => evt.id !== payload.id);
     default:
       throw new Error();
   }
 }
-function initEvents() {
-  const storageEvents = localStorage.getItem("savedEvents");
-  const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
-  console.log("STORAGEEVENTS " + storageEvents);
-  console.log("PARSEDEVENTS " + parsedEvents);
+
+function initEvents(props) {
+  console.log("[CW] INIT EVENTS: " + props);
+  const storageEvents = props.eventList;
+  //const storageEvents = localStorage.getItem("savedEvents");
+
+  // 👇️ Check if undefined or null
+  var count = 0;
+  if (props.eventList === undefined || props.eventList === null) {
+    console.log('✅ variable is undefined or null init()');
+  } else {
+    console.log('⛔️ variable is NOT undefined or null init()');
+    count = Object.keys(props.eventList).length;
+  };
+  const stringEvents = (count > 0 ? JSON.stringify(storageEvents) : []);
+  const parsedEvents = (count > 0 ? JSON.parse(stringEvents) : []);
+  console.log("[CW] PARSEDEVENTS: " + parsedEvents);
   return parsedEvents;
 }
 
@@ -42,36 +58,89 @@ export default function ContextWrapper(props) {
     [],
     initEvents
   );
+  console.log("[CW] INIT CW: " + (props.eventList));
 
   const filteredEvents = useMemo(() => {
-    console.log("SAVED EVENTS " + JSON.stringify(savedEvents));
-    console.log(labels);
-    return savedEvents.filter((evt) =>
-      labels
-        .filter((lbl) => lbl.checked)
-        .map((lbl) => lbl.label)
-        .includes(evt.event_label)
-    );
-  }, [savedEvents, labels]);
+    //console.log("[CW] PROPS DATATYPE: " + typeof props.eventList);
+    //props.eventList == null ? console.log("[CW] PROPS CONDITION NULLTYPE [TRUE]: " + props.eventList) : console.log("[CW] PROPS CONDITION NULLTYPE [FALSE]: " + props.eventList);
+    //props.eventList == undefined ? console.log("[CW] PROPS CONDITION UNDEFINED [TRUE]: " + props.eventList) : console.log("[CW] PROPS CONDITION UNDEFINED [FALSE]: " + props.eventList);
+    //props.eventList == "" ? console.log("[CW] PROPS CONDITION EMPTYSTRING [TRUE]: " + props.eventList) : console.log("[CW] PROPS CONDITION EMPTYSTRING [FALSE]: " + props.eventList);
+    var count = 0;
+    if (props.eventList === undefined || props.eventList === null) {
+      console.log('✅ variable is undefined or null init()');
+    } else {
+      console.log('⛔️ variable is NOT undefined or null init()');
+      count = Object.keys(props.eventList).length;
+    };
+    if (count > 0) {
+      console.log("[CW] PROPS EVENT DATA: " + props.eventList);
+      console.log("[CW] LABELS: " + labels);
+      const stringEvents = (count > 0 ? JSON.stringify(props.eventList) : []);
+      const parsedEvents = (count > 0 ? JSON.parse(stringEvents) : []);
+      return parsedEvents.filter((evt) =>
+        labels
+          .filter((lbl) => lbl.checked)
+          .map((lbl) => lbl.label)
+          .includes(evt.event_label)
+      );
+    };
+    return [];
+
+  }, [savedEvents, labels, props.isDataLoaded]);
 
   useEffect(() => {
-    localStorage.setItem("savedEvents", JSON.stringify(savedEvents));
+    if (props.isDataLoaded) {
+      console.log("[CW] DATA LOADED BITCH " + props.isDataLoaded + props.eventList);
+      dispatchCalEvent({ type: "load", payload: props.eventList });
+    }
+  }, [props.isDataLoaded]);
+
+  useEffect(() => {
+    var count = 0;
+    if (props.eventList === undefined || props.eventList === null) {
+      console.log('✅ variable is undefined or null init()');
+    } else {
+      console.log('⛔️ variable is NOT undefined or null init()');
+      count = Object.keys(props.eventList).length;
+    };
+    const stringEvents = (count > 0 ? JSON.stringify(props.eventList) : []);
+    const parsedEvents = (count > 0 ? JSON.parse(stringEvents) : []);
+    console.log("[CW] EVENTLIST UPDATED: " + parsedEvents);
+
+  }, [props.eventList]);
+
+  useEffect(() => {
+    //localStorage.setItem("savedEvents", JSON.stringify(savedEvents));
+    //const storageEvents = localStorage.getItem("savedEvents");
+    //console.log("[CW] THE GHOST EFFECT: " + storageEvents);
+    //console.log("[CW] THE GHOST EFFECT 2: " + props.eventList);
+    //console.log("[CW] THE GHOST EFFECTOR: " + JSON.parse(storageEvents));
+
+    if (props.isDataLoaded) {
+      console.log("[CW] DATA LOADED: " + props.isDataLoaded + " " + props.eventList);
+    } else {
+      console.log("[CW] DATA NOT LOADED YET: " + props.isDataLoaded);
+    }
   }, [savedEvents]);
 
   useEffect(() => {
-    setLabels((prevLabels) => {
-      return [...new Set(savedEvents.map((evt) => evt.event_label))].map(
-        (label) => {
-          const currentLabel = prevLabels.find(
-            (lbl) => lbl.label === label
-          );
-          return {
-            label,
-            checked: currentLabel ? currentLabel.checked : true,
-          };
-        }
-      );
-    });
+    savedEvents == null ? console.log("[CW] PROPSEFFECT CONDITION EMPTYSTRING [TRUE]: " + savedEvents) : console.log("[CW] PROPSEFFECT CONDITION EMPTYSTRING [FALSE]: " + savedEvents);
+    if (savedEvents != null) {
+      setLabels((prevLabels) => {
+        return [...new Set(savedEvents.map((evt) => evt.event_label))].map(
+          (label) => {
+            const currentLabel = prevLabels.find(
+              (lbl) => lbl.label === label
+            );
+            return {
+              label,
+              checked: currentLabel ? currentLabel.checked : true,
+            };
+          }
+        );
+      });
+    };
+
   }, [savedEvents]);
 
   useEffect(() => {
@@ -114,6 +183,7 @@ export default function ContextWrapper(props) {
       }}
     >
       {props.children}
+      {props.isDataLoaded}
     </GlobalContext.Provider>
   );
 }

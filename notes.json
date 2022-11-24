@@ -1,0 +1,129 @@
+[
+    {
+        "event_title":"dds",
+        "event_description":"ssss",
+        "event_label":"indigo",
+        "day":"2022-11-09T00:00:00.000Z",
+        "eventStart":"2022-11-09T00:00:00.000Z",
+        "eventEnd":"","eventStartTime":"01:29",
+        "eventEndTime":"01:31","id":1667957340000
+    },
+    {
+        "event_title":"dadaas",
+        "event_description":"lool",
+        "event_label":"indigo",
+        "start_date":"2022-11-20T00:00:00.000Z",
+        "eventStart":"2022-11-20T00:00:00.000Z",
+        "eventEnd":"","eventStartTime":"01:36",
+        "eventEndTime":"01:39","id":1668908160000
+    },
+    {
+        "id":1668477960000,
+        "event_title":"adadD",
+        "event_description":"adad",
+        "start_date":"2022-11-15T00:00:00.000Z",
+        "end_date":"","start_time":"02:30",
+        "end_time":"02:32",
+        "is_full_day_event":false,
+        "is_reccuring":false,
+        "created_by":"frontend-dev",
+        "created_date":"2022-11-19T02:50:30.466Z",
+        "parent_event_id":null,
+        "event_label":"red"
+    },
+    {
+        "event_title":"ssadfa",
+        "event_description":"fff",
+        "event_label":"indigo",
+        "start_date":"2022-11-21T00:00:00.000Z",
+        "end_date":"","eventStartTime":"02:10",
+        "eventEndTime":"02:13","id":1668996600000
+        },
+        {
+            "event_title":"pls",
+            "event_description":"ddd",
+            "event_label":"indigo",
+            "start_date":"2022-11-23T00:00:00.000Z",
+            "end_date":"","eventStartTime":"02:14",
+            "eventEndTime":"02:18","id":1669169640000
+        },
+        {"event_title":"weird","event_description":"lol","event_label":"indigo","start_date":"2022-11-19T00:00:00.000Z","end_date":"","eventStartTime":"02:14","eventEndTime":"02:14","id":1669256040000},{"id":1668565560000,"event_title":"time","event_description":"ada","start_date":"2022-11-16T00:00:00.000Z","end_date":"","start_time":"02:26","end_time":"02:31","is_full_day_event":false,"is_reccuring":false,"created_by":"frontend-dev","created_date":"2022-11-19T03:34:59.512Z","parent_event_id":null,"event_label":"red"},{"event_title":"daddf","event_description":"aaa","event_label":"green","start_date":"2022-11-17T00:00:00.000Z","end_date":"","start_time":"02:30","end_time":"02:31","id":1668652200000},{"id":1668739620000,"event_title":"ok","event_description":"haha","start_date":"2022-11-18T00:00:00.000Z","end_date":"","start_time":"02:47","end_time":"02:51","is_full_day_event":false,"is_reccuring":false,"created_by":"frontend-dev","created_date":"2022-11-19T02:48:08.046Z","parent_event_id":null,"event_label":"blue"},{"id":1662432840000,"event_title":"wtf","event_description":"haha","start_date":"2022-09-06T23:00:00.000Z","end_date":"","start_time":"02:54","end_time":"02:58","is_full_day_event":false,"is_reccuring":false,"created_by":"frontend-dev","created_date":"2022-11-19T02:55:09.353Z","parent_event_id":null,"event_label":"red"}]
+
+        export async function getAllEvents2() {
+
+            const [result, setResult] = useState([]);
+        
+            const message = async () => {
+                try{
+                    let response = await axios.get('http://localhost:8000/events');
+                    console.log('response data ', response.data)
+                    //return response.data;
+                    result = response.data;
+                    setResult(result);
+                    return (result)
+                }catch(error) {
+                    console.log(error)
+                    //return [];
+                }
+            };
+        }
+
+            /*useEffect(() => {
+        setEventList((event_list) => response.data);
+     
+      }, []); // <- add empty brackets here*/
+
+
+    //return {event_list};
+
+
+    // fetches stock data based on parameters
+const fetchData = (e) => {
+    let [responseData, setResponseData] = React.useState('')
+    let [ticker, setTicker] = React.useState('')
+    let [message, setMessage] = React.useState('')
+  
+    e.preventDefault()
+    setMessage('Loading...')
+    api.getData()
+    .then((response)=>{
+        setResponseData(response.data)
+        setMessage('')
+        console.log(response)
+    })
+    .catch((error) => {
+        setMessage('Error')
+        console.log(error)
+    })
+  }
+
+    //const [eventList, getEvents] = useContext(GlobalContext);
+    const [eventList, getEvents] = useState([]);
+    useEffect(() => {
+      getAllEvents();
+      console.log("[APP] LOADING APP EFFECTS...");
+      console.log(eventList);
+    }, []);
+  
+    useEffect(() => {
+      console.log("[APP] EVENTLIST UPDATED: " + eventList);
+    }, [eventList]);
+  
+    const getAllEvents = () => {
+      axios.get('http://localhost:8000/events')
+      .then((response) => {
+          const allEvents = response.data
+          console.log("[APP] LOADED DATA: " + allEvents);
+          getEvents(allEvents);
+          console.log("[APP] COMPLETE TIME: " + dayjs());
+      })
+      .catch(function(err) {
+          console.log("[APP] ERROR: " + err); 
+      });
+    console.log("[APP] LOADED??? " + eventList);
+    }; 
+
+    console.log("[CW] PROPS DATA HOE2: " + typeof Object.values(props.eventList));
+      console.log("[CW] PROPS DATA HOE2: " + typeof props.eventList);
+      console.log("[CW] PROPS DATA HOE2: " + JSON.stringify(props.eventList));
+      console.log("[CW] PROPS DATA HOE2: " + typeof JSON.stringify(props.eventList));
