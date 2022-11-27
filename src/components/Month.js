@@ -8,7 +8,7 @@ export default function Month({ month, isDataLoaded, eventList }) {
       {month.map((row, i) => (
         <React.Fragment key={i}>
           {
-            isDataLoaded && row.map((day, idx) => (
+            row.map((day, idx) => (
               <Day day={day} key={idx} rowIdx={i} isDataLoaded={isDataLoaded} eventList={eventList}/>
             ))
           }

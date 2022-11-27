@@ -127,3 +127,38 @@ const fetchData = (e) => {
       console.log("[CW] PROPS DATA HOE2: " + typeof props.eventList);
       console.log("[CW] PROPS DATA HOE2: " + JSON.stringify(props.eventList));
       console.log("[CW] PROPS DATA HOE2: " + typeof JSON.stringify(props.eventList));
+      }
+    }
+}
+
+{
+    "id": null,
+    "event_title": "kuku",
+    "event_description": "haha",
+    "start_date": "2022-11-27T00:00:00.000Z",
+    "end_date": "",
+    "start_time": "19:07",
+    "end_time": "19:08",
+    "is_full_day_event": false,
+    "is_reccuring": false,
+    "created_by": "frontend-dev",
+    "created_date": "2022-11-25T19:07:28.317Z",
+    "parent_event_id": null,
+    "event_label": "green"
+}
+
+{
+    "id": null,
+    "event_title": "fsfs",
+    "event_description": "adad",
+    "start_date": "2022-11-29T00:00:00.000Z",
+    "end_date": "2022-11-29T00:00:00.000Z",
+    "start_time": "19:13",
+    "end_time": "21:13",
+    "is_full_day_event": false,
+    "is_reccuring": false,
+    "created_by": "frontend-dev",
+    "created_date": "2022-11-25T19:13:49.171Z",
+    "parent_event_id": null,
+    "event_label": "blue"
+}

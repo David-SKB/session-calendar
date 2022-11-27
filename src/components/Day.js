@@ -53,7 +53,7 @@ export default function Day({ day, rowIdx, isDataLoaded, eventList }) {
           setShowEventModal(true);
         }}
       >
-        {dayEvents.map((evt, idx) => (
+        {isDataLoaded && dayEvents.map((evt, idx) => (
           <div
             key={idx}
             onClick={() => setSelectedEvent(evt)}

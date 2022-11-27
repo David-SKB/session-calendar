@@ -48,3 +48,19 @@ export function getThemeClass(property) {
   }
   return themeClass;
 }
+
+function replaceRange(s, start, end, substitute) {
+  console.log("REPLACERANGE: " + s + "SUB: " + substitute);
+  return s.substring(0, start) + substitute + s.substring(end);
+}
+
+export function isObjectEmpty(value) {
+  // 👇️ Check if undefined or null
+  if (value === undefined || value === null) {
+    console.log('✅ variable is undefined or null init(): ' + value);
+    return true;
+  } else {
+    console.log('⛔️ variable is NOT undefined or null init(): ' + value);
+    return false;
+  };
+}

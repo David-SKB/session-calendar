@@ -13,7 +13,7 @@ function App(props) {
   const [currenMonth, setCurrentMonth] = useState(getMonth());
   const { monthIndex, showEventModal } = useContext(GlobalContext);
   if (props.isDataLoaded) {
-  console.log("[APP] PROPS DATA: " + props.isDataLoaded + " " + props.eventList);
+  console.log("[APP] PROPS DATA: " + props.isDataLoaded  + " " + props.reloadData  + " " + props.setReloadData + " " + props.eventList);
   }
   //const themeColor = getTheme();
   //const themeClass = getThemeClass();
@@ -23,15 +23,21 @@ function App(props) {
     setCurrentMonth(getMonth(monthIndex));
   }, [monthIndex]);
 
+  useEffect(() => {
+    if (true) {
+      console.log("[APP] RELOAD DATA.EFFECT: " + props.reloadData);
+    }
+  }, [props.reloadData]);
+
   return (
     <React.Fragment>
-      {showEventModal && <EventModal />}
+      {showEventModal && <EventModal reloadData={props.reloadData} setReloadData={props.setReloadData}/>}
 
       <div className={"h-screen flex flex-col theme-red"}>
         <CalendarHeader />
         <div className="flex flex-1">
           <Sidebar />
-          {props.isDataLoaded && <Month month={currenMonth} isDataLoaded={props.isDataLoaded} eventList={props.eventList}/>}
+          {<Month month={currenMonth} isDataLoaded={props.isDataLoaded} eventList={props.eventList}/>}
         </div>
       </div>
     </React.Fragment>

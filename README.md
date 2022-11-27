@@ -1,3 +1,6 @@
+# Session Calendar APP
+This project was created to handle session bookings, which will integrate with other 3rd party services in the future.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

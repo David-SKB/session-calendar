@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import GlobalContext from "../context/GlobalContext";
 import { getTheme, getThemeClass } from "../util";
 import '../themes.css';
 import dayjs from "dayjs";
+import { createEvent, getAllEvents } from "../services/EventService";
 
 const labelsClasses = [
   "indigo",
@@ -13,7 +14,8 @@ const labelsClasses = [
   "purple",
 ];
 
-export default function EventModal() {
+export default function EventModal(props) {
+  console.log("[EM] RELOAD DATA VALUE: " + props.reloadData + " " + props.setReloadData + props.passPls);
   const themeColor = getTheme();
   const themeClass = getThemeClass("primary-color");
   const accentColor = getTheme("primary-color");
@@ -22,6 +24,8 @@ export default function EventModal() {
     dispatchCalEvent,
     selectedEvent,
     daySelected,
+    //setReloadData,
+    //reloadData
   } = useContext(GlobalContext);
 
   const [event_title, setTitle] = useState(
@@ -30,57 +34,65 @@ export default function EventModal() {
   const [event_description, setDescription] = useState(
     selectedEvent ? selectedEvent.event_description : ""
   );
+
+  const [startDate, setStartDate] = useState(
+    selectedEvent ? selectedEvent.eventStart : daySelected
+  );
+  const [endDate, setEndDate] = useState(
+    selectedEvent ? selectedEvent.end_date : ""
+  );
+
   const [eventStartTime, setEventStartTime] = useState(
     selectedEvent ? selectedEvent.start_time : ""
   );
   const [eventEndTime, setEventEndTime] = useState(
     selectedEvent ? selectedEvent.end_time : ""
   );
-  const [startDate, setStartDate] = useState(
-    selectedEvent ? selectedEvent.eventStart : ""
+
+  const [isFullDayEvent, setIsFullDayEvent] = useState(
+    selectedEvent ? selectedEvent.is_full_day_event : false
   );
-  const [endDate, setEndDate] = useState(
-    selectedEvent ? selectedEvent.end_date : ""
+
+  const [isReccuring, setIsReccuring] = useState(
+    selectedEvent ? selectedEvent.is_reccuring : false
   );
-  const [eventStartDay, setEventStartDay] = useState(
-    selectedEvent ? selectedEvent.eventStartDay : ""
+
+  const [createdBy, setCreatedBy] = useState(
+    selectedEvent ? selectedEvent.created_by : ""
   );
+
+  const [createdDate, setCreatedDate] = useState(
+    selectedEvent ? selectedEvent.created_date : ""
+  );
+
+  const [parentEventId, setParentEventId] = useState(
+    selectedEvent ? selectedEvent.parent_event_id : null
+  );
+
+  const [dataSubmitted, setDataSubmitted] = useState(false);
+
+  const [ loadData, setLoadData ] = useState(false);
   
   const [selectedLabel, setSelectedLabel] = useState(
     selectedEvent
       ? labelsClasses.find((lbl) => lbl === selectedEvent.event_label)
       : labelsClasses[0]
   );
-
   function handleSubmit(e) {
     e.preventDefault();
-    const eventID = new Date(replaceRange((startDate ? startDate : daySelected.toDate().toISOString()), 11, 16, eventStartTime.valueOf())).valueOf();
+    //const eventID = new Date(replaceRange((startDate ? startDate : daySelected.toDate().toISOString()), 11, 16, eventStartTime.valueOf())).valueOf();
     //console.log("HANDLESUBMIT: " + eventID);
     //console.log("SELECTEDEVENT: " + selectedEvent);
-    //console.log(eventStart);
-    //console.log(eventStartTime.valueOf());
-    //console.log(eventID);
-
-    /*id = Column(Integer, primary_key=True)-
-    event_title = Column(String, nullable=False)x
-    event_description = Column(String, nullable=True)x
-    start_date = Column(Date, nullable=False)x
-    end_date = Column(Date, nullable=True)x
-    start_time = Column(Time, nullable=True)x
-    end_time = Column(Time, nullable=True)x
-    is_full_day_event = Column(Boolean, nullable=False)p
-    is_reccuring = Column(Boolean, nullable=False)p
-    created_by = Column(String, nullable=False)
-    created_date = Column(DateTime, nullable=False)x
-    parent_event_id = Column(Integer, ForeignKey("event.id"), nullable = True)s
-    event_label = Column(String, nullable = True)x*/
-
+    //const { setReloadData, reloadData } = useContext(GlobalContext);
+    console.log("[EM] CHECKING END DATE: " + startDate);
+    console.log("[EM] CHECKING END DATE: " + endDate);
+    endDate == "" ? console.log("[EM] EMPTY END DATE: " + endDate) : console.log("[EM] NOT EMPTY END DATE: " + endDate);
     const calendarEvent = {
-      id: selectedEvent ? selectedEvent.id : eventID,
+      id: selectedEvent ? selectedEvent.id : null,
       event_title,
       event_description,
       start_date: startDate ? startDate : daySelected,
-      end_date: endDate,
+      end_date: endDate == "" ? startDate : endDate,
       start_time: eventStartTime,
       end_time: eventEndTime,
       is_full_day_event: false,
@@ -93,16 +105,31 @@ export default function EventModal() {
     if (selectedEvent) {
       dispatchCalEvent({ type: "update", payload: calendarEvent });
     } else {
-      dispatchCalEvent({ type: "push", payload: calendarEvent });
+      //console.log("[EM] CALENDAR EVENT: " + JSON.parse(calendarEvent));
+      //console.log("[EM] CALENDAR EVENT2: " + calendarEvent);
+      console.log("[EM] CALENDAR EVENT3: " + JSON.stringify(calendarEvent));
+      setDataSubmitted(true);
+      createEvent(calendarEvent).then((response) => {
+        console.log("[EM] POSTING EVENT SUCCESS: " + response);
+        setLoadData(!loadData);
+        setShowEventModal(false);
+      });   
+    }
+  }
+
+  useEffect(() => {
+    console.log("[EM] RELOADDATA.EFFECT: " + props.reloadData + " " + dataSubmitted);
+    if (dataSubmitted){
+      console.log("[EM] [POST] DATA SUBMITTED " + props.reloadData);
+      props.setReloadData(!props.reloadData);
     }
 
-    setShowEventModal(false);
-  }
+  }, [loadData]);
 
   function replaceRange(s, start, end, substitute) {
     console.log("REPLACERANGE: " + s + "SUB: " + substitute);
     return s.substring(0, start) + substitute + s.substring(end);
-}
+  }
   /** DEBUG **/
   //console.log(daySelected.toDate());
   //console.log(daySelected.valueOf());
@@ -125,11 +152,12 @@ export default function EventModal() {
   console.log("DAY SELECTED2: " + daySelected);
   console.log("DAY SELECTED3: " + daySelected.toDate());*/
   //console.log(dayjs().toISOString().slice(0, 10));
+
   return (
     <div className={"h-screen w-full fixed left-0 top-0 flex justify-center items-center"}>
       <form className={"bg-" + themeColor + "-200 rounded-lg shadow-2xl w-1/4"}>
         <header className={"bg-gray-100 px-4 py-2 flex justify-between items-center " + themeClass}>
-          <span className={"material-icons-outlined text-gray-400" }>
+          <span className={"material-icons-outlined text-gray-400"}>
             drag_handle
           </span>
           <div>
@@ -154,7 +182,7 @@ export default function EventModal() {
             </button>
           </div>
         </header>
-        <div className={"p-3 " }>
+        <div className={"p-3 "}>
           <div className="grid grid-cols-1/5 items-end gap-y-7">
             <div></div>
             <input
@@ -169,17 +197,17 @@ export default function EventModal() {
             <span className="self-center material-icons-outlined text-gray-400">
               calendar_month
             </span>
-            
+
             <input
-                type="date"
-                name="start_date"
-                id="start_date"
-                value={startDate ? new Date(startDate).toISOString().slice(0, 10) : new Date(daySelected).toISOString().slice(0, 10)}
-                required
-                className={"justify-center border-none bg-" + themeColor + "-200"}
-                onChange={(e) => {setStartDate(e.target.value); }}
-                min={dayjs().toISOString().slice(0, 10)}
-              />
+              type="date"
+              name="start_date"
+              id="start_date"
+              value={startDate ? new Date(startDate).toISOString().slice(0, 10) : new Date(daySelected).toISOString().slice(0, 10)}
+              required
+              className={"justify-center border-none bg-" + themeColor + "-200"}
+              onChange={(e) => { setStartDate(e.target.value); }}
+              min={dayjs().toISOString().slice(0, 10)}
+            />
 
             {<span className="self-center material-icons-outlined text-gray-400">
               schedule
@@ -206,11 +234,11 @@ export default function EventModal() {
                 min={eventStartTime ? eventStartTime : dayjs().toISOString().slice(0, 10)}
               />
             </div>
-            
+
 
             <span className="self-center material-icons-outlined text-gray-400">
               segment
-              </span>
+            </span>
 
 
             <input

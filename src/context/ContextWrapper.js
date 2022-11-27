@@ -6,14 +6,17 @@ import React, {
 } from "react";
 import GlobalContext from "./GlobalContext";
 import dayjs from "dayjs";
+import { isObjectEmpty } from "../util";
 
 function savedEventsReducer(state, { type, payload }) {
   //console.log("[CW] STATE: " + state);
   //console.log("[CW] TYPE: " + type);
   //console.log("[CW] PAYLOAD: " + payload);
+  //const [dataSubmitted, setDataSubmitted] = useState(false);
   switch (type) {
     case "push":
-      return [...state, payload];
+      console.log("[CW] POSTING EVENT: " + payload);
+    return [...state, payload];
     case "update":
       return state.map((evt) =>
         evt.id === payload.id ? payload : evt
@@ -30,16 +33,7 @@ function savedEventsReducer(state, { type, payload }) {
 function initEvents(props) {
   console.log("[CW] INIT EVENTS: " + props);
   const storageEvents = props.eventList;
-  //const storageEvents = localStorage.getItem("savedEvents");
-
-  // 👇️ Check if undefined or null
-  var count = 0;
-  if (props.eventList === undefined || props.eventList === null) {
-    console.log('✅ variable is undefined or null init()');
-  } else {
-    console.log('⛔️ variable is NOT undefined or null init()');
-    count = Object.keys(props.eventList).length;
-  };
+  var count = (isObjectEmpty(props.eventList) ? 0 : Object.keys(props.eventList).length);
   const stringEvents = (count > 0 ? JSON.stringify(storageEvents) : []);
   const parsedEvents = (count > 0 ? JSON.parse(stringEvents) : []);
   console.log("[CW] PARSEDEVENTS: " + parsedEvents);
@@ -61,17 +55,12 @@ export default function ContextWrapper(props) {
   console.log("[CW] INIT CW: " + (props.eventList));
 
   const filteredEvents = useMemo(() => {
+    //DEBUG
     //console.log("[CW] PROPS DATATYPE: " + typeof props.eventList);
     //props.eventList == null ? console.log("[CW] PROPS CONDITION NULLTYPE [TRUE]: " + props.eventList) : console.log("[CW] PROPS CONDITION NULLTYPE [FALSE]: " + props.eventList);
     //props.eventList == undefined ? console.log("[CW] PROPS CONDITION UNDEFINED [TRUE]: " + props.eventList) : console.log("[CW] PROPS CONDITION UNDEFINED [FALSE]: " + props.eventList);
     //props.eventList == "" ? console.log("[CW] PROPS CONDITION EMPTYSTRING [TRUE]: " + props.eventList) : console.log("[CW] PROPS CONDITION EMPTYSTRING [FALSE]: " + props.eventList);
-    var count = 0;
-    if (props.eventList === undefined || props.eventList === null) {
-      console.log('✅ variable is undefined or null init()');
-    } else {
-      console.log('⛔️ variable is NOT undefined or null init()');
-      count = Object.keys(props.eventList).length;
-    };
+    var count = (isObjectEmpty(props.eventList) ? 0 : Object.keys(props.eventList).length);
     if (count > 0) {
       console.log("[CW] PROPS EVENT DATA: " + props.eventList);
       console.log("[CW] LABELS: " + labels);
@@ -96,13 +85,7 @@ export default function ContextWrapper(props) {
   }, [props.isDataLoaded]);
 
   useEffect(() => {
-    var count = 0;
-    if (props.eventList === undefined || props.eventList === null) {
-      console.log('✅ variable is undefined or null init()');
-    } else {
-      console.log('⛔️ variable is NOT undefined or null init()');
-      count = Object.keys(props.eventList).length;
-    };
+    var count = (isObjectEmpty(props.eventList) ? 0 : Object.keys(props.eventList).length);
     const stringEvents = (count > 0 ? JSON.stringify(props.eventList) : []);
     const parsedEvents = (count > 0 ? JSON.parse(stringEvents) : []);
     console.log("[CW] EVENTLIST UPDATED: " + parsedEvents);
@@ -110,11 +93,8 @@ export default function ContextWrapper(props) {
   }, [props.eventList]);
 
   useEffect(() => {
-    //localStorage.setItem("savedEvents", JSON.stringify(savedEvents));
-    //const storageEvents = localStorage.getItem("savedEvents");
-    //console.log("[CW] THE GHOST EFFECT: " + storageEvents);
-    //console.log("[CW] THE GHOST EFFECT 2: " + props.eventList);
-    //console.log("[CW] THE GHOST EFFECTOR: " + JSON.parse(storageEvents));
+    //console.log("[CW] THE GHOST EFFECT: " + props.eventList);
+    //console.log("[CW] THE GHOST EFFECTOR: " + JSON.parse(props.eventList));
 
     if (props.isDataLoaded) {
       console.log("[CW] DATA LOADED: " + props.isDataLoaded + " " + props.eventList);
